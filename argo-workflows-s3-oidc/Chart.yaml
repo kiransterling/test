@@ -1,0 +1,12 @@
+apiVersion: v2
+name: argo-workflows-s3-oidc
+description: A Helm chart for Argo Workflows with S3 and OIDC configured.
+type: application
+version: 0.1.0
+appVersion: "v3.7.0"
+icon: https://raw.githubusercontent.com/argoproj/argo-workflows/master/docs/assets/argo.png
+
+dependencies:
+- name: argo-workflows
+  version: "0.45.21"
+  repository: "https://argoproj.github.io/argo-helm"

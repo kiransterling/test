@@ -1,0 +1,71 @@
+# S3 configuration for log and artifact backup
+s3:
+  # If you want to create a new secret for S3 credentials, set this to true
+  createSecret: true
+  # The name of the secret containing S3 credentials
+  secretName: "argo-s3-creds"
+  # The access key for S3
+  accessKey: ""
+  # The secret key for S3
+  secretKey: ""
+
+# OIDC configuration for authentication
+oidc:
+  # If you want to create a new secret for OIDC credentials, set this to true
+  createSecret: true
+  # The name of the secret containing OIDC credentials
+  secretName: "argo-oidc-creds"
+  # The OIDC client ID
+  clientId: ""
+  # The OIDC client secret
+  clientSecret: ""
+
+# Argo Workflows subchart configuration
+# All values under this key will be passed to the argo-workflows subchart.
+# See https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/values.yaml for all available options.
+argo-workflows:
+  # Example configuration for SSO (OIDC)
+  server:
+    sso:
+      enabled: true
+      # The OIDC issuer URL
+      # For Azure AD, this is usually in the format: https://login.microsoftonline.com/<tenant-id>/v2.0
+      # For SAP BTP XSUAA, this is usually in the format: https://<subdomain>.authentication.<region>.hana.ondemand.com/oauth/token
+      issuer: ""
+      clientId:
+        # The name of the secret containing OIDC credentials.
+        # This should match the `oidc.secretName` value above if `oidc.createSecret` is true.
+        name: "argo-oidc-creds"
+        key: clientId
+      clientSecret:
+        # The name of the secret containing OIDC credentials.
+        # This should match the `oidc.secretName` value above if `oidc.createSecret` is true.
+        name: "argo-oidc-creds"
+        key: clientSecret
+      # The OIDC redirect URL. Should be in the form <argo-root-url>/oauth2/callback
+      redirectUrl: ""
+    authModes:
+      - "sso"
+
+  # Example configuration for S3 artifact repository
+  artifactRepository:
+    archiveLogs: true
+    s3:
+      # The S3 bucket name
+      bucket: ""
+      # The S3 endpoint
+      endpoint: ""
+      # The S3 region
+      region: ""
+      insecure: false
+      accessKeySecret:
+        # The name of the secret containing S3 credentials.
+        # This should match the `s3.secretName` value above if `s3.createSecret` is true.
+        name: "argo-s3-creds"
+        key: accessKey
+      secretKeySecret:
+        # The name of the secret containing S3 credentials.
+        # This should match the `s3.secretName` value above if `s3.createSecret` is true.
+        name: "argo-s3-creds"
+        key: secretKey
+      useSDKCreds: false
